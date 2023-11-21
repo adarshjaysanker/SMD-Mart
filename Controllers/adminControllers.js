@@ -57,5 +57,13 @@ module.exports = {
         }catch(error){
             console.log(error);
         }
+    },
+
+    getSignUpPage : async(req,res)=>{
+        try{
+            res.render('admin/signup');
+        }catch(error){
+            console.log(error);
+        }
     }
 }
