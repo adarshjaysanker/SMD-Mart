@@ -3,7 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var ejs = require('ejs')
+var ejs = require('ejs');
+var mongoose = require('mongoose');
+var mongodb = require('mongodb')
 
 
 var indexRouter = require('./routes/admin');
@@ -24,6 +26,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', indexRouter);
 app.use('/', usersRouter);
+
+mongoose.connect("mongodb+srv://mbdigiworldinfo:mbdigi@cluster0.zcgt8d7.mongodb.net/?retryWrites=true&w=majority",{
+}).then(()=>{
+  console.log('connected to mongodb');
+}).catch((error)=>{
+  console.log('failed to connect to mongodb',error);
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
