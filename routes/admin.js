@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+const {getAdminHomePage} = require('../Controllers/adminControllers');
+
 /* GET users listing. */
-router.get('/', function(req, res) {
-  res.render('admin/index');
-});
+router.get('/admin',getAdminHomePage)
 
 module.exports = router;
