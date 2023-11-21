@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var ejs = require('ejs');
 var mongoose = require('mongoose');
-var mongodb = require('mongodb')
+var mongodb = require('mongodb');
+var nodemon = require('nodemon')
 
 
 var indexRouter = require('./routes/admin');
