@@ -65,5 +65,29 @@ module.exports = {
         }catch(error){
             console.log(error);
         }
+    },
+
+    getReviews : async(req,res)=>{
+        try{
+            res.render('admin/reviews')
+        }catch(error){
+            console.log(error);
+        }
+    },
+
+    getBrands : async(req,res)=>{
+        try{
+            res.render('admin/brand')
+        }catch(error){
+            console.log(error);
+        }
+    },
+
+    getProductCategories : async(req,res)=>{
+        try{
+            res.render('admin/categories')
+        }catch(error){
+            console.log(error);
+        }
     }
 }
