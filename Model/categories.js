@@ -13,6 +13,19 @@ const categorySchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref : 'Subcategory',
         }
+    ],
+    brands : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'Brand'
+        }
+    ],
+
+    products : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'allProducts'
+        }
     ]
 });
 

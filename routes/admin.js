@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const upload = require('../Middlewares/mullter-config')
 
 const {
 
@@ -18,6 +19,9 @@ const {
   categoryTable,
   createSubcategory,
   addNewBrandPage,
+  addBrand,
+  getBrandsByCategory,
+  addProduct
 
 } = require('../Controllers/adminControllers');
 
@@ -34,10 +38,13 @@ router.get('/getreviews',getReviews);
 router.get('/getbrands',getBrands);
 router.get('/getproductcategories',getProductCategories);
 router.get('/getcategorytable',categoryTable);
-router.get('/addnewbrandpage',addNewBrandPage)
+router.get('/addnewbrandpage',addNewBrandPage);
+router.get('/getbrandsbycategory',getBrandsByCategory)
 
 
 router.post('/createcategories',createCategories);
 router.post('/postsubcategory',createSubcategory);
+router.post('/addbrand',upload.single('image'),addBrand);
+router.post('/addproduct',upload.single('image'), addProduct)
 
 module.exports = router;

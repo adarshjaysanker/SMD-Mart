@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const Category = require('../Model/categories');
 const Subcategory = require('../Model/subCategories');
+const Brand = require('../Model/brand');
+const Allproducts = require('../Model/allProducts')
 
 module.exports = {
 
@@ -14,8 +16,9 @@ module.exports = {
     },
 
     getAllProductsPage : async(req,res)=>{
-        try{
-            res.render('admin/allproducts');
+        try{  
+            const products = await Allproducts.find();        
+            res.render('admin/allproducts', {products});
         }catch(error){
             console.log(error);
         }
@@ -39,7 +42,11 @@ module.exports = {
 
     getAddNewProductPage : async(req,res)=>{
         try{
-            res.render('admin/addproduct')
+            const categories = await Category.find();
+            const subcategories = await Subcategory.find();
+            const brands = await Brand.find();
+            console.log(categories);
+            res.render('admin/addproduct',{categories : categories, subcategories : subcategories, brands : brands})
         }catch(error){
             console.log(error);
         }
@@ -79,7 +86,9 @@ module.exports = {
 
     getBrands : async(req,res)=>{
         try{
-            res.render('admin/brand')
+            const categories = await Category.find({},'categoryName');
+            const brands = await Brand.find({});
+            res.render('admin/brand',{categories, brands})
         }catch(error){
             console.log(error);
         }
@@ -152,9 +161,68 @@ module.exports = {
 
     addNewBrandPage : async(req,res)=>{
         try{
-            res.render('admin/addBrand');
+            const categories = await Category.find();
+            res.render('admin/addBrand',{categories});
         }catch(error){
             console.log(error);
+        }
+    },
+
+    addBrand : async(req,res)=>{
+        console.log(req.file);
+        try{
+            const {brandName, selectedCategory} = req.body;
+            const image = req.file ? req.file.filename : null;
+            console.log(brandName, image);
+            const newBrand = new Brand({
+                brandName : brandName,
+                image : image,
+                category : selectedCategory
+            });
+            await newBrand.save(); 
+            await Category.findByIdAndUpdate(selectedCategory, {$push: {brands: newBrand._id}});
+            res.json({message : 'Brand created successfully', brand : newBrand});
+        }catch(error){
+            console.error(error);
+            res.status(500).json({error : 'Internal Server Error'});
+        }
+    },
+
+    getBrandsByCategory : async(req,res)=>{
+        try{
+            const categoryId = req.query.categoryId;
+            const category = await Category.findById(categoryId).populate('brands');
+            res.json({brands : category.brands})
+        }catch(error){
+            console.error(error);
+            res.status(500).send('internal server error')
+        }
+    },
+
+    addProduct : async(req,res)=>{
+        try{
+            console.log(req.body);
+            const {productTitle, brandName, description, cost} = req.body;
+            const category = req.body.category;
+            const subCategory = req.body.subCategory;
+            const image = req.file ? req.file.filename : null;
+            
+            const newProduct = new Allproducts({
+                productTitle,
+                brandName,
+                description,
+                category,
+                subCategory,
+                cost,
+                image,
+            });
+            await newProduct.save();
+            await Category.findByIdAndUpdate(category, {$push: {products : newProduct._id}});
+            await Subcategory.findByIdAndUpdate(subCategory,{$push: {products: newProduct._id}});
+            await Brand.findByIdAndUpdate(brandName, {$push: {products: newProduct._id}});
+            res.json({message : 'prodduct added', product : newProduct})
+        }catch(error){
+            res.status(500).send('internal server error')
         }
     }
 }

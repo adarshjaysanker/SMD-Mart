@@ -8,7 +8,14 @@ const subcategoryschema = new mongoose.Schema({
     category : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'Category',
-    }
+    },
+
+    products : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'allProducts'
+        }
+    ]
 
 });
 
