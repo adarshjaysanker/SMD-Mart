@@ -171,17 +171,25 @@ module.exports = {
     addBrand : async(req,res)=>{
         console.log(req.file);
         try{
-            const {brandName, selectedCategory} = req.body;
+            const {brandName, selectedCategories} = req.body;
             const image = req.file ? req.file.filename : null;
             console.log(brandName, image);
+            console.log(selectedCategories);
+            const categoryIds = Array.isArray(selectedCategories) ? selectedCategories : [selectedCategories];
+            console.log(categoryIds);
             const newBrand = new Brand({
                 brandName : brandName,
                 image : image,
-                category : selectedCategory
+                category : categoryIds
             });
-            await newBrand.save(); 
-            await Category.findByIdAndUpdate(selectedCategory, {$push: {brands: newBrand._id}});
-            res.json({message : 'Brand created successfully', brand : newBrand});
+            await newBrand.save();
+            const brandId = newBrand._id;
+          
+            await Promise.all(categoryIds.map(async categoryId => {
+                await Category.findByIdAndUpdate(categoryId, {$push: {brands : newBrand._id}});
+            }))
+            await Brand.findByIdAndUpdate(brandId, {$set: {category : categoryIds}});
+            res.json({message: 'Brand created successfully', brand : newBrand})
         }catch(error){
             console.error(error);
             res.status(500).json({error : 'Internal Server Error'});

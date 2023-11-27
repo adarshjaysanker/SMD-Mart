@@ -26,6 +26,11 @@
             border: none;
             cursor: pointer;
         }
+
+        .error-message{
+            color: red;
+            display: block;
+        }
     </style>
 
 </head>
@@ -114,15 +119,19 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form>
+                            <form id="categoryForm">
                                 <div class="mb-4">
                                     <label for="categoryName" class="form-label">Category Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="categoryName" name="categoryName" />
-                                </div>
+                                    <div id="error-categoryName" class="text-danger"></div>
+                                   
                                 <div class="mb-4">
                                     <label for="description" class="form-label">Description</label>
                                     <textarea placeholder="Type here" class="form-control" id="description" name="description"></textarea>
+                                    <div id="error-description" class="text-danger"></div>
+                                   
                                 </div>
+                                
                                 <div class="d-grid">
                                     <button type="button" class="btn btn-primary" onclick="createCategory()">Create category</button>
                                 </div>
@@ -257,9 +266,25 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <script>
+       
         function createCategory(){
+          
             const categoryName = $('#categoryName').val();
             const description = $('#description').val();
+            $('#error-cataegoryName').text('');
+            $('#error-description').text('');
+
+            if(!categoryName){
+                $('#error-categoryName').text('Please enter a category name');
+                return;
+            }
+            if(!description){
+                $('#error-description').text('Please enter a description');
+                return;
+            }
+            
+           
+           
             $.ajax({
                 url : '/admin/createcategories',
                 method : 'POST',
@@ -274,6 +299,8 @@
                 }
             })
         }
+
+       
 
         function updateCategoryTable(){
             $.ajax({

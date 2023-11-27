@@ -127,7 +127,7 @@
                                     <% categories.forEach(category => {%>
                                     <div class="mb-4">
                                         <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                            <input class="form-check-input" name="selectedCategory" type="radio" value="<%= category._id %>">
+                                            <input class="form-check-input" name="selectedCategories" type="checkbox" value="<%= category._id %>">
                                             <span class="form-check-label"><%= category.categoryName %></span>
                                         </label>
                                     </div>
@@ -197,16 +197,21 @@
         function createBrand(){
             const brandName = $('#brandName').val();
             const brandImage = $('#image')[0].files[0];
-            const selectedCategory = $('input[name="selectedCategory"]:checked').val();
+            const selectedCategories = $('input[name="selectedCategories"]:checked').map(function(){
+                return $(this).val();
+            }).get();
 
             console.log(brandName);
             console.log(brandImage);
+            console.log(selectedCategories);
 
             const formData = new FormData();
             formData.append('brandName',brandName);
             formData.append('image',brandImage);
-            formData.append('selectedCategory',selectedCategory)
-
+           
+            selectedCategories.forEach(category => {
+                formData.append('selectedCategories[]',category);
+            });
 
             $.ajax({
                 url : '/admin/addbrand',

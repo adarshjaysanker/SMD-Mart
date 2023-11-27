@@ -8,10 +8,12 @@ const brandSchema = new mongoose.Schema({
     image : {
         type : String
     },
-    category : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Category'
-    },
+    category : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'Category'
+        },
+    ],
     products : [
         {
             type : mongoose.Schema.Types.ObjectId,
