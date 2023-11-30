@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+const Allproducts = require('../Model/allProducts');
+const Category = require('../Model/categories');
+
 module.exports = {
 
     getUserHomePage : async(req,res)=>{
@@ -13,7 +16,9 @@ module.exports = {
 
     getAllProductsPage : async(req,res)=>{
         try{
-            res.render('user/allproducts')
+            const products = await Allproducts.find().populate('category');
+            const categories = await Category.find();
+            res.render('user/allproducts',{products, categories});
         }catch(error){
             console.log(error);
         }
